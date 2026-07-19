@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kaifang Yao's Homepage</title>
+    <meta name="author" content="Kaifang Yao">
+    <meta name="description" content="Kaifang Yao (姚凯方) — Personal Homepage.">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS (via CDN for simplicity) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: '#0a2245',
+                        accent: '#2563eb',
+                        accentHover: '#1d4ed8',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Custom scrollbar for news box */
+        .news-scroll::-webkit-scrollbar {
+            width: 6px;
+        }
+        .news-scroll::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        .news-scroll::-webkit-scrollbar-thumb {
+            background: #ccc;
+            border-radius: 3px;
+        }
+        .news-scroll::-webkit-scrollbar-thumb:hover {
+            background: #999;
+        }
+
+        /* Photo Gallery Styles */
+        .gallery-container {
+            position: relative;
+            width: 55%;
+            max-width: 200px;
+            margin: 0 auto 1.5rem auto;
+            aspect-ratio: 3/4;
+            overflow: hidden;
+            border-radius: 0.75rem;
+            background-color: #f3f4f6;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        @media (min-width: 768px) {
+            .gallery-container {
+                margin: 0 0 1.5rem 0;
+                width: 180px;
+                max-width: 180px;
+            }
+        }
+
+        @supports not (aspect-ratio: 3/4) {
+            .gallery-container {
+                padding-top: 133.33%;
+            }
+            .gallery-container::before {
+                content: '';
+                float: left;
+                padding-top: 133.33%;
+            }
+            .gallery-container::after {
+                content: '';
+                display: table;
+                clear: both;
+            }
+        }
+
+        .gallery-photo {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: opacity 0.3s ease-in-out;
+        }
+        .nav-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.7);
+            border: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            color: #333;
+            transition: all 0.2s;
+            opacity: 0;
+            z-index: 10;
+        }
+        .gallery-container:hover .nav-btn {
+            opacity: 1;
+        }
+        .nav-btn:hover {
+            background: white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        .prev-btn { left: 10px; }
+        .next-btn { right: 10px; }
+
+        /* Font for Chinese Name */
+        .chinese-name {
+            font-family: "STXingkai", "华文行楷", "Xingkai SC", "KaiTi", "楷体", serif;
+        }
+    </style>
+</head>
+<body class="bg-white text-slate-800 antialiased selection:bg-blue-100 selection:text-blue-900">
+
+    <div class="max-w-6xl mx-auto px-4 py-12 md:py-16 flex flex-col md:flex-row gap-12">
+
+        <!-- LEFT SIDEBAR (Profile) -->
+        <aside class="w-full md:w-1/3 lg:w-1/4 flex-shrink-0">
+            <div class="md:sticky md:top-8">
+
+                <!-- Photo Gallery -->
+                <div class="gallery-container shadow-sm group">
+                    <img id="current-photo" src="" alt="Kaifang Yao" class="gallery-photo" onerror="this.src='https://ui-avatars.com/api/?name=Kaifang+Yao&background=0a2245&color=fff&size=256'">
+                    <button class="nav-btn prev-btn" id="btn-prev"><i class="fa-solid fa-chevron-left"></i></button>
+                    <button class="nav-btn next-btn" id="btn-next"><i class="fa-solid fa-chevron-right"></i></button>
+                </div>
+
+                <!-- Name & Title -->
+                <div class="text-center md:text-left px-0 md:px-0">
+                    <h1 class="text-2xl font-bold text-gray-900 mb-1">Kaifang Yao</h1>
+                    <p class="chinese-name text-3xl font-bold text-gray-700 mb-4">姚凯方</p>
+
+                    <div class="text-sm space-y-2 mb-6 text-gray-700">
+                        <p class="font-medium text-primary"><!-- Your title/role here --></p>
+                        <p><!-- Your department here --></p>
+                        <p><!-- Your institution here --></p>
+                        <p><!-- Your location here --></p>
+                    </div>
+
+                    <!-- Social Links -->
+                    <div class="flex justify-center md:justify-start gap-4 mb-8">
+                        <a href="mailto:your-email@example.com" class="text-gray-600 hover:text-accent transition-colors" title="Email">
+                            <i class="fa-solid fa-envelope fa-lg"></i>
+                        </a>
+                        <a href="https://github.com/wwwsaidthat" target="_blank" class="text-gray-600 hover:text-accent transition-colors" title="GitHub">
+                            <i class="fa-brands fa-github fa-lg"></i>
+                        </a>
+                        <a href="#" target="_blank" class="text-gray-600 hover:text-accent transition-colors" title="Google Scholar">
+                            <i class="fa-solid fa-graduation-cap fa-lg"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- RIGHT MAIN CONTENT -->
+        <main class="w-full md:w-2/3 lg:w-3/4 space-y-16">
+
+            <!-- Biography -->
+            <section>
+                <h2 class="text-xl font-bold border-b border-gray-200 pb-2 mb-4 text-gray-900 uppercase tracking-wide text-sm">Biography</h2>
+                <div class="text-gray-700 leading-relaxed space-y-4 text-justify">
+                    <p>
+                        Hi there! I'm Kaifang Yao (姚凯方). Welcome to my personal homepage.
+                    </p>
+                    <p>
+                        I am currently a <!-- your position --> at <!-- your institution -->. My research interests include <!-- your research interests -->.
+                    </p>
+                    <p>
+                        <!-- Add more details about your background, research focus, and what you're passionate about here. -->
+                    </p>
+                </div>
+            </section>
+
+            <!-- News -->
+            <section>
+                <h2 class="text-xl font-bold border-b border-gray-200 pb-2 mb-4 text-gray-900 uppercase tracking-wide text-sm">News</h2>
+                <div class="bg-slate-50 rounded-lg p-4 border border-slate-100 max-h-64 overflow-y-auto news-scroll shadow-inner">
+                    <ul class="space-y-3 text-sm">
+                        <li class="flex gap-3">
+                            <span class="font-mono text-gray-500 whitespace-nowrap text-xs font-bold pt-1"><!-- Date --></span>
+                            <span><!-- Your news item here --></span>
+                        </li>
+                        <!-- Add more news items following the same format -->
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Publications -->
+            <section id="publications-section">
+                <h2 class="text-xl font-bold border-b border-gray-200 pb-2 mb-6 text-gray-900 uppercase tracking-wide text-sm flex justify-between items-end">
+                    <span>Publications</span>
+                </h2>
+
+                <div class="mb-8 space-y-4">
+                    <div class="relative w-full">
+                        <input type="text" id="pub-search" placeholder="Search by title, tag, venue, author or year..."
+                               class="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent/50 focus:border-accent transition-colors bg-gray-50 focus:bg-white"
+                               oninput="handleSearch(this.value)">
+                        <i class="fa-solid fa-search absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-xs"></i>
+                    </div>
+
+                    <div id="pub-tags" class="flex flex-wrap gap-2">
+                    </div>
+                </div>
+
+                <div id="publications-list" class="space-y-6">
+                </div>
+
+                <div id="no-results" class="hidden text-center py-8 text-gray-500 text-sm">
+                    No publications found matching your criteria.
+                </div>
+            </section>
+
+            <!-- Projects -->
+            <section>
+                <h2 class="text-xl font-bold border-b border-gray-200 pb-2 mb-6 text-gray-900 uppercase tracking-wide text-sm">Projects</h2>
+                <div class="space-y-4">
+                    <!-- Add your projects here -->
+                    <div class="flex flex-col gap-1 border-l-4 border-accent pl-4 py-1 bg-blue-50/40 rounded-r-lg">
+                        <div class="font-bold text-gray-900 text-lg"><!-- Project Name --></div>
+                        <p class="text-sm text-gray-700">
+                            <!-- Project description -->
+                        </p>
+                        <div class="mt-2 flex flex-wrap gap-3 text-xs font-medium">
+                            <a href="#" target="_blank" class="text-accent hover:underline">[GitHub]</a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Experience -->
+            <section>
+                <h2 class="text-xl font-bold border-b border-gray-200 pb-2 mb-6 text-gray-900 uppercase tracking-wide text-sm">Experience</h2>
+                <div class="space-y-4">
+                    <div class="flex flex-col sm:flex-row justify-between">
+                        <div>
+                            <div class="font-bold text-gray-900"><!-- Organization --></div>
+                            <div class="text-sm text-gray-700"><!-- Position --></div>
+                            <div class="text-sm text-gray-600 mt-1"><!-- Details --></div>
+                        </div>
+                        <div class="text-right sm:text-right">
+                            <div class="text-sm text-gray-500"><!-- Date range --></div>
+                            <div class="text-sm text-gray-400"><!-- Location --></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Education -->
+            <section>
+                <h2 class="text-xl font-bold border-b border-gray-200 pb-2 mb-6 text-gray-900 uppercase tracking-wide text-sm">Education</h2>
+                <div class="space-y-6">
+                    <div class="flex flex-col sm:flex-row justify-between">
+                        <div>
+                            <div class="font-bold text-gray-900"><!-- School --></div>
+                            <div class="text-sm text-gray-700"><!-- Degree --></div>
+                            <div class="text-sm text-gray-600 mt-1"><!-- Details --></div>
+                        </div>
+                        <div class="text-right sm:text-right">
+                            <div class="text-sm text-gray-500"><!-- Date range --></div>
+                            <div class="text-sm text-gray-400"><!-- Location --></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Services & Honors (Grid) -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <section>
+                    <h2 class="text-xl font-bold border-b border-gray-200 pb-2 mb-4 text-gray-900 uppercase tracking-wide text-sm">Services</h2>
+                    <div class="mb-4">
+                        <h3 class="font-bold text-gray-900 text-sm mb-2">Program Committee Member / Reviewer</h3>
+                        <ul class="text-sm text-gray-700 space-y-1 list-disc list-inside">
+                            <!-- <li>Conference Name</li> -->
+                        </ul>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-gray-900 text-sm mb-2">Teaching Assistant</h3>
+                        <ul class="text-sm text-gray-700 space-y-1 list-disc list-inside">
+                            <!-- <li>Course Name (Semester Year)</li> -->
+                        </ul>
+                    </div>
+                </section>
+
+                <section>
+                    <h2 class="text-xl font-bold border-b border-gray-200 pb-2 mb-4 text-gray-900 uppercase tracking-wide text-sm">Honors</h2>
+                    <ul class="text-sm text-gray-700 space-y-2 list-disc list-inside">
+                        <!-- <li>Award Name, Year</li> -->
+                    </ul>
+                </section>
+            </div>
+
+            <!-- Footer -->
+            <footer class="pt-12 pb-8 text-center text-xs text-gray-400">
+                <p>&copy; 2026 Kaifang Yao. Hosted on GitHub Pages.</p>
+            </footer>
+
+        </main>
+    </div>
+
+    <script>
+        // --- Photo Gallery Logic ---
+        document.addEventListener('DOMContentLoaded', function() {
+            const basePath = './images/';
+            const maxPhotos = 20;
+            let photoPaths = [];
+            let currentIndex = 0;
+            const imgElem = document.getElementById('current-photo');
+            const prevBtn = document.getElementById('btn-prev');
+            const nextBtn = document.getElementById('btn-next');
+
+            let checkCount = 1;
+
+            function preloadImages() {
+                if (checkCount > maxPhotos) {
+                    initGallery();
+                    return;
+                }
+
+                const img = new Image();
+                const path = `${basePath}photo${checkCount}.jpg`;
+
+                img.onload = function() {
+                    photoPaths.push(path);
+                    checkCount++;
+                    preloadImages();
+                };
+
+                img.onerror = function() {
+                    initGallery();
+                };
+
+                img.src = path;
+            }
+
+            function initGallery() {
+                if (photoPaths.length === 0) {
+                    return;
+                }
+
+                photoPaths.reverse();
+
+                showPhoto(0);
+
+                prevBtn.addEventListener('click', () => {
+                    currentIndex = (currentIndex - 1 + photoPaths.length) % photoPaths.length;
+                    showPhoto(currentIndex);
+                });
+
+                nextBtn.addEventListener('click', () => {
+                    currentIndex = (currentIndex + 1) % photoPaths.length;
+                    showPhoto(currentIndex);
+                });
+            }
+
+            function showPhoto(index) {
+                imgElem.style.opacity = '0';
+                setTimeout(() => {
+                    imgElem.src = photoPaths[index];
+                    imgElem.style.opacity = '1';
+                }, 200);
+            }
+
+            preloadImages();
+        });
+
+
+        // --- PUBLICATIONS DATA & LOGIC ---
+        // Add your publications here. Each publication is an object with:
+        //   title, authors, venue, year, tags (array), selected (boolean),
+        //   note (optional), links (array of {name, url, icon})
+        //
+        // Icon classes: "fa-regular fa-file-pdf" for papers, "fa-brands fa-github" for code,
+        //              "fa-solid fa-book" for docs, "fa-solid fa-globe" for websites
+
+        const publicationsData = [
+            // {
+            //     title: "Your Paper Title",
+            //     authors: "<b>Kaifang Yao</b>, Co-author Name",
+            //     venue: "Conference Name 2026",
+            //     year: 2026,
+            //     tags: ["Tag1", "Tag2"],
+            //     selected: true,
+            //     note: "Optional note about your contribution.",
+            //     links: [
+            //         { name: "Paper", url: "https://arxiv.org/abs/...", icon: "fa-regular fa-file-pdf" },
+            //         { name: "Code", url: "https://github.com/...", icon: "fa-brands fa-github" }
+            //     ]
+            // },
+        ];
+
+        // 2. STATE MANAGEMENT
+        let currentState = {
+            mode: 'selected',
+            activeValue: null,
+            searchQuery: ''
+        };
+
+        // 3. INIT & RENDER
+        document.addEventListener('DOMContentLoaded', () => {
+            renderFilters();
+            renderPublications();
+        });
+
+        function handleSearch(query) {
+            currentState.searchQuery = query.toLowerCase();
+            renderPublications();
+        }
+
+        function setMode(mode, value = null) {
+            if (currentState.mode === mode && currentState.activeValue === value && mode !== 'selected' && mode !== 'all') {
+                currentState.mode = 'all';
+                currentState.activeValue = null;
+            } else {
+                currentState.mode = mode;
+                currentState.activeValue = value;
+            }
+
+            renderFilters();
+            renderPublications();
+        }
+
+        function renderFilters() {
+            const container = document.getElementById('pub-tags');
+            if (!container) return;
+            container.innerHTML = '';
+
+            function createPill(label, isActive, onClick) {
+                const btn = document.createElement('button');
+                let classes = "pub-tag px-3 py-1 rounded-full text-xs font-medium border transition-colors cursor-pointer ";
+
+                if (isActive) {
+                    classes += "bg-blue-50 text-accent border-blue-200 shadow-sm";
+                } else {
+                    classes += "bg-white text-gray-500 border-gray-200 hover:border-gray-300 hover:text-gray-800";
+                }
+
+                btn.className = classes;
+                btn.textContent = label;
+                btn.onclick = onClick;
+                container.appendChild(btn);
+            }
+
+            createPill('Selected', currentState.mode === 'selected', () => setMode('selected'));
+            createPill('All', currentState.mode === 'all', () => setMode('all'));
+
+            const allYears = [...new Set(publicationsData.map(p => p.year))].sort((a,b) => b - a);
+            allYears.forEach(year => {
+                const isActive = (currentState.mode === 'year' && currentState.activeValue === year);
+                createPill(year.toString(), isActive, () => setMode('year', year));
+            });
+
+            const allTags = new Set();
+            publicationsData.forEach(pub => pub.tags.forEach(t => allTags.add(t)));
+            const sortedTags = Array.from(allTags).sort();
+
+            sortedTags.forEach(tag => {
+                const isActive = (currentState.mode === 'tag' && currentState.activeValue === tag);
+                createPill(tag, isActive, () => setMode('tag', tag));
+            });
+        }
+
+        function renderPublications() {
+            const container = document.getElementById('publications-list');
+            const noResults = document.getElementById('no-results');
+            if (!container) return;
+            container.innerHTML = '';
+
+            const filtered = publicationsData.filter(pub => {
+                if (currentState.mode === 'selected') {
+                    if (!pub.selected) return false;
+                } else if (currentState.mode === 'year') {
+                    if (pub.year !== currentState.activeValue) return false;
+                } else if (currentState.mode === 'tag') {
+                    if (!pub.tags.includes(currentState.activeValue)) return false;
+                }
+
+                if (currentState.searchQuery) {
+                    const q = currentState.searchQuery;
+                    const matchTitle = pub.title.toLowerCase().includes(q);
+                    const matchVenue = pub.venue.toLowerCase().includes(q);
+                    const matchYear = pub.year.toString().includes(q);
+                    const matchTags = pub.tags.some(t => t.toLowerCase().includes(q));
+                    const authorText = pub.authors.replace(/<[^>]*>?/gm, '').toLowerCase();
+                    const matchAuth = authorText.includes(q);
+
+                    if (!matchTitle && !matchVenue && !matchTags && !matchAuth && !matchYear) return false;
+                }
+
+                return true;
+            });
+
+            if (filtered.length === 0) {
+                if (noResults) noResults.classList.remove('hidden');
+            } else {
+                if (noResults) noResults.classList.add('hidden');
+
+                filtered.forEach(pub => {
+                    const card = document.createElement('div');
+                    card.className = "flex flex-col gap-1 group";
+
+                    const content = document.createElement('div');
+                    content.className = "flex-grow";
+
+                    const title = document.createElement('h3');
+                    title.className = "text-base font-bold text-gray-900 leading-tight group-hover:text-accent transition-colors";
+                    title.textContent = pub.title;
+
+                    const authors = document.createElement('div');
+                    authors.className = "text-sm text-gray-600 mt-1";
+                    authors.innerHTML = pub.authors;
+
+                    const infoLine = document.createElement('div');
+                    infoLine.className = "mt-1 flex flex-wrap gap-x-2 items-center";
+
+                    const venue = document.createElement('span');
+                    venue.className = "text-sm italic text-gray-500 mr-2";
+                    venue.textContent = pub.venue;
+                    infoLine.appendChild(venue);
+
+                    pub.tags.forEach(t => {
+                        const tSpan = document.createElement('span');
+                        tSpan.className = "text-[10px] uppercase tracking-wider px-1.5 py-0.5 rounded bg-gray-100 text-gray-500";
+                        tSpan.textContent = t;
+                        infoLine.appendChild(tSpan);
+                    });
+
+                    if (pub.note) {
+                        const contrib = document.createElement('span');
+                        contrib.className = "text-xs text-gray-400 italic";
+                        contrib.innerHTML = `${pub.note}`;
+                        infoLine.appendChild(contrib);
+                    }
+
+                    const linksDiv = document.createElement('div');
+                    linksDiv.className = "mt-2 flex gap-3 text-xs font-medium";
+
+                    pub.links.forEach(link => {
+                        const a = document.createElement('a');
+                        a.href = link.url;
+                        a.target = "_blank";
+                        a.className = "flex items-center gap-1 text-gray-700 hover:text-accent border border-gray-300 rounded px-2 py-0.5 hover:border-accent transition-colors";
+                        a.innerHTML = `<i class="${link.icon}"></i> ${link.name}`;
+                        linksDiv.appendChild(a);
+                    });
+
+                    content.appendChild(title);
+                    content.appendChild(authors);
+                    content.appendChild(infoLine);
+                    content.appendChild(linksDiv);
+
+                    card.appendChild(content);
+                    container.appendChild(card);
+                });
+            }
+        }
+    </script>
+</body>
+</html>

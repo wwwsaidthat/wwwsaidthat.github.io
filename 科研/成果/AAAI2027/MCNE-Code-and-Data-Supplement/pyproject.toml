@@ -1,0 +1,40 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mcne-reproduction"
+version = "1.0.0"
+description = "Anonymous reproduction package for Matryoshka Graph Contrastive Learning."
+readme = "README.md"
+requires-python = ">=3.10"
+keywords = [
+  "graph contrastive learning",
+  "nested representations",
+  "matryoshka representation learning",
+  "pytorch-geometric",
+]
+classifiers = [
+  "Intended Audience :: Science/Research",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+dependencies = [
+  "torch>=2.0",
+  "torch-geometric>=2.7.0",
+  "torch-sparse",
+  "torch-scatter",
+  "pytorch-frame",
+  "scikit-learn",
+  "numpy",
+  "scipy",
+  "matplotlib",
+  "pyyaml",
+  "ogb",
+  "psutil",
+]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["pyagc*", "unified_methods*"]

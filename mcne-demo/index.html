@@ -39,7 +39,10 @@
           <h1>一模七维，<br><span>按需出征。</span></h1>
           <p>同一个图编码器生成一条完整向量；七个嵌套前缀分别适配从端侧设备到云端服务器的不同资源预算。</p>
         </div>
-        <img src="assets/seven-layer-matryoshka.png" alt="由七层彩色嵌套结构组成的科技俄罗斯套娃" class="hero-art">
+        <div id="hero-art-frame" class="hero-art-frame" aria-live="polite">
+          <img id="hero-art" src="assets/seven-layer-matryoshka.png" alt="由七层彩色嵌套结构组成的科技俄罗斯套娃" class="hero-art">
+          <div class="active-layer-badge"><span>当前展开层</span><strong id="hero-layer-dim">128D</strong><em id="hero-layer-name">黄维·稳健表达</em></div>
+        </div>
         <div class="dimension-orbit" id="dimension-orbit" aria-label="选择向量维度"></div>
         <div class="stage-foot">
           <span>32D</span><span class="nest-line"></span><span>64D</span><span class="nest-line"></span><span>128D</span><span class="nest-line"></span><span>256D</span><span class="nest-line"></span><span>384D</span><span class="nest-line"></span><span>512D</span><span class="nest-line"></span><span>768D</span>
@@ -59,7 +62,7 @@
         </div>
 
         <div class="vector-section">
-          <div class="section-label"><span>Node #871 · 768维完整向量</span><strong id="vector-prefix-label">前128维启用</strong></div>
+          <div class="section-label"><span id="vector-node-label">Node #871 · 同一条768维完整向量</span><strong id="vector-prefix-label">仅截取前128维</strong></div>
           <div id="vector-heatmap" class="vector-heatmap" aria-label="节点向量热力图"></div>
           <div class="vector-scale"><span>负值</span><span>当前前缀边界</span><span>正值</span></div>
         </div>

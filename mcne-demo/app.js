@@ -5,6 +5,7 @@
   const COLORS = ["#ff5d70", "#ff934b", "#f8ce46", "#33d17a", "#2bd2ca", "#448cff", "#9a6dff"];
   const NAMES = ["红维·轻量核心", "橙维·快速感知", "黄维·稳健表达", "绿维·平衡部署", "青维·关系增强", "蓝维·精细区分", "紫维·完整语义"];
   const DEVICES = ["IoT", "移动端", "边缘设备", "实时服务", "边缘服务器", "工作站", "云端"];
+  const ART_SCALES = [2.55, 2.18, 1.82, 1.52, 1.3, 1.14, 1];
   const MOCK = {
     baseline: [63.8, 68.7, 72.4, 77.1, 79.2, 80.3, 81.1],
     mcne: [73.5, 78.8, 81.6, 83.4, 84.1, 84.5, 84.7],
@@ -59,13 +60,16 @@
     return () => (value = value * 16807 % 2147483647) / 2147483647;
   }
 
-  function getVector(dimIndex) {
-    const seed = 871 + dimIndex * 97;
-    if (!state.vectors.has(seed)) {
-      const random = seededRandom(seed);
-      state.vectors.set(seed, Array.from({length: 96}, () => random() * 2 - 1));
+  function selectedNodeId() {
+    return Number($("#selected-node")?.textContent.match(/\d+/)?.[0] || 871);
+  }
+
+  function getFullVector(nodeId) {
+    if (!state.vectors.has(nodeId)) {
+      const random = seededRandom(nodeId * 97 + 2027);
+      state.vectors.set(nodeId, Array.from({length: 768}, () => random() * 2 - 1));
     }
-    return state.vectors.get(seed);
+    return state.vectors.get(nodeId);
   }
 
   function initDimensions() {
@@ -115,7 +119,12 @@
     $("#device-chip").textContent = DEVICES[state.active];
     $("#metric-memory").textContent = formatBytes(dim * 4);
     $("#metric-compute").textContent = `${Math.round(dim / 768 * 100)}%`;
-    $("#vector-prefix-label").textContent = `前 ${dim} 维启用`;
+    $("#vector-prefix-label").textContent = `仅截取前 ${dim} 维`;
+    const artFrame = $("#hero-art-frame");
+    artFrame.style.setProperty("--layer-color", COLORS[state.active]);
+    $("#hero-art").style.transform = `scale(${ART_SCALES[state.active]})`;
+    $("#hero-layer-dim").textContent = `${dim}D`;
+    $("#hero-layer-name").textContent = NAMES[state.active];
     updateScores();
     updateVector();
     updatePredictions();
@@ -138,7 +147,7 @@
   function updateVector() {
     const dim = DIMS[state.active];
     const enabledCount = Math.max(1, Math.round(dim / 768 * 96));
-    const vector = state.remoteResult?.selected_vector || getVector(state.active);
+    const vector = state.remoteResult?.selected_vector || getFullVector(selectedNodeId());
     $$(".vector-cell").forEach((cell, index) => {
       const sourceIndex = Math.round(index / 95 * Math.max(0, vector.length - 1));
       const value = Number(vector[sourceIndex] || 0);
@@ -287,7 +296,10 @@
       if (job.metrics) applyRemoteMetrics(job.metrics);
       if (job.result) {
         state.remoteResult = job.result;
-        if (job.result.selected_node != null) $("#selected-node").textContent = `Node #${job.result.selected_node}`;
+        if (job.result.selected_node != null) {
+          $("#selected-node").textContent = `Node #${job.result.selected_node}`;
+          $("#vector-node-label").textContent = `Node #${job.result.selected_node} · 同一条768维完整向量`;
+        }
         if (job.result.selected_vector) updateVector();
         updatePredictions(); drawPlots();
       }
@@ -376,7 +388,9 @@
     $("#random-node-button").addEventListener("click", () => {
       const next = 700 + Math.floor(Math.random() * 1700);
       $("#selected-node").textContent = `Node #${next}`;
-      updatePredictions();
+      $("#vector-node-label").textContent = `Node #${next} · 同一条768维完整向量`;
+      state.remoteResult = null;
+      updatePredictions(); updateVector();
     });
   }
 

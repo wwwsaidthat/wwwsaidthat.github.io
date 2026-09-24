@@ -6,6 +6,8 @@
   const NAMES = ["红维·轻量核心", "橙维·快速感知", "黄维·稳健表达", "绿维·平衡部署", "青维·关系增强", "蓝维·精细区分", "紫维·完整语义"];
   const DEVICES = ["IoT", "移动端", "边缘设备", "实时服务", "边缘服务器", "工作站", "云端"];
   const ART_SCALES = [2.55, 2.18, 1.82, 1.52, 1.3, 1.14, 1];
+  const ART_WINDOWS = [[4, 6, 69], [7, 9, 68], [10, 14, 66], [15, 22, 63], [24, 34, 60], [36, 50, 56], [72, 92, 50]];
+  const BASE_SHADES = [1, 1, 1, .9, .72, .45, 0];
   const MOCK = {
     baseline: [63.8, 68.7, 72.4, 77.1, 79.2, 80.3, 81.1],
     mcne: [73.5, 78.8, 81.6, 83.4, 84.1, 84.5, 84.7],
@@ -122,7 +124,11 @@
     $("#vector-prefix-label").textContent = `仅截取前 ${dim} 维`;
     const artFrame = $("#hero-art-frame");
     artFrame.style.setProperty("--layer-color", COLORS[state.active]);
-    $("#hero-art").style.transform = `scale(${ART_SCALES[state.active]})`;
+    artFrame.style.setProperty("--art-scale", ART_SCALES[state.active]);
+    artFrame.style.setProperty("--active-rx", `${ART_WINDOWS[state.active][0]}%`);
+    artFrame.style.setProperty("--active-ry", `${ART_WINDOWS[state.active][1]}%`);
+    artFrame.style.setProperty("--active-cy", `${ART_WINDOWS[state.active][2]}%`);
+    artFrame.style.setProperty("--base-shade", BASE_SHADES[state.active]);
     $("#hero-layer-dim").textContent = `${dim}D`;
     $("#hero-layer-name").textContent = NAMES[state.active];
     updateScores();

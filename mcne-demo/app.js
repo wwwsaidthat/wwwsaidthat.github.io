@@ -5,9 +5,7 @@
   const COLORS = ["#ff5d70", "#ff934b", "#f8ce46", "#33d17a", "#2bd2ca", "#448cff", "#9a6dff"];
   const NAMES = ["红维·轻量核心", "橙维·快速感知", "黄维·稳健表达", "绿维·平衡部署", "青维·关系增强", "蓝维·精细区分", "紫维·完整语义"];
   const DEVICES = ["IoT", "移动端", "边缘设备", "实时服务", "边缘服务器", "工作站", "云端"];
-  const ART_SCALES = [2.55, 2.18, 1.82, 1.52, 1.3, 1.14, 1];
-  const ART_WINDOWS = [[4, 6, 69], [7, 9, 68], [10, 14, 66], [15, 22, 63], [24, 34, 60], [36, 50, 56], [72, 92, 50]];
-  const BASE_SHADES = [1, 1, 1, .9, .72, .45, 0];
+  const LAYER_BOUNDS = [[.46, .54, .67, .84], [.41, .59, .61, .83], [.37, .63, .52, .84], [.32, .68, .42, .86], [.26, .74, .30, .9], [.2, .8, .16, .94], [.08, .92, 0, 1]];
   const MOCK = {
     baseline: [63.8, 68.7, 72.4, 77.1, 79.2, 80.3, 81.1],
     mcne: [73.5, 78.8, 81.6, 83.4, 84.1, 84.5, 84.7],
@@ -108,6 +106,65 @@
     }
   }
 
+  function colorLayer(r, g, b) {
+    const rn = r / 255, gn = g / 255, bn = b / 255;
+    const max = Math.max(rn, gn, bn), min = Math.min(rn, gn, bn), delta = max - min;
+    const saturation = max === 0 ? 0 : delta / max;
+    if (saturation < .2 || max < .18 || delta === 0) return -1;
+    let hue;
+    if (max === rn) hue = 60 * (((gn - bn) / delta) % 6);
+    else if (max === gn) hue = 60 * ((bn - rn) / delta + 2);
+    else hue = 60 * ((rn - gn) / delta + 4);
+    if (hue < 0) hue += 360;
+    if (hue < 18 || hue >= 345) return 0;
+    if (hue < 42) return 1;
+    if (hue < 68) return 2;
+    if (hue < 165) return 3;
+    if (hue < 205) return 4;
+    if (hue < 250) return 5;
+    return 6;
+  }
+
+  function initDollLayers() {
+    const stack = $("#doll-layer-stack");
+    const base = $("#doll-base");
+    const image = new Image();
+    image.addEventListener("load", () => {
+      const width = base.width, height = base.height;
+      const baseContext = base.getContext("2d", {willReadFrequently: true});
+      baseContext.drawImage(image, 390, 0, 780, 1024, 0, 0, width, height);
+      const source = baseContext.getImageData(0, 0, width, height);
+      const dimmedBase = new ImageData(new Uint8ClampedArray(source.data), width, height);
+      const layerData = DIMS.map(() => new ImageData(width, height));
+      for (let offset = 0; offset < source.data.length; offset += 4) {
+        const value = Math.max(source.data[offset], source.data[offset + 1], source.data[offset + 2]);
+        dimmedBase.data[offset + 3] = Math.round(dimmedBase.data[offset + 3] * Math.max(0, Math.min(1, (value - 24) / 72)));
+        const layer = colorLayer(source.data[offset], source.data[offset + 1], source.data[offset + 2]);
+        if (layer < 0) continue;
+        const pixel = offset / 4;
+        const x = (pixel % width) / width, y = Math.floor(pixel / width) / height;
+        const [left, right, top, bottom] = LAYER_BOUNDS[layer];
+        if (x < left || x > right || y < top || y > bottom) continue;
+        layerData[layer].data[offset] = source.data[offset];
+        layerData[layer].data[offset + 1] = source.data[offset + 1];
+        layerData[layer].data[offset + 2] = source.data[offset + 2];
+        layerData[layer].data[offset + 3] = source.data[offset + 3];
+      }
+      baseContext.clearRect(0, 0, width, height);
+      baseContext.putImageData(dimmedBase, 0, 0);
+      layerData.forEach((pixels, index) => {
+        const canvas = document.createElement("canvas");
+        canvas.width = width; canvas.height = height;
+        canvas.className = "doll-canvas doll-layer";
+        canvas.dataset.layer = String(index);
+        canvas.getContext("2d").putImageData(pixels, 0, 0);
+        canvas.classList.toggle("active", index === state.active);
+        stack.appendChild(canvas);
+      });
+    }, {once: true});
+    image.src = "assets/seven-layer-matryoshka.png";
+  }
+
   function setDimension(index) {
     state.active = Math.max(0, Math.min(DIMS.length - 1, index));
     const dim = DIMS[state.active];
@@ -124,11 +181,7 @@
     $("#vector-prefix-label").textContent = `仅截取前 ${dim} 维`;
     const artFrame = $("#hero-art-frame");
     artFrame.style.setProperty("--layer-color", COLORS[state.active]);
-    artFrame.style.setProperty("--art-scale", ART_SCALES[state.active]);
-    artFrame.style.setProperty("--active-rx", `${ART_WINDOWS[state.active][0]}%`);
-    artFrame.style.setProperty("--active-ry", `${ART_WINDOWS[state.active][1]}%`);
-    artFrame.style.setProperty("--active-cy", `${ART_WINDOWS[state.active][2]}%`);
-    artFrame.style.setProperty("--base-shade", BASE_SHADES[state.active]);
+    $$(".doll-layer").forEach((layer) => layer.classList.toggle("active", Number(layer.dataset.layer) === state.active));
     $("#hero-layer-dim").textContent = `${dim}D`;
     $("#hero-layer-name").textContent = NAMES[state.active];
     updateScores();
@@ -400,5 +453,5 @@
     });
   }
 
-  initDimensions(); initVector(); initNavigation(); initEvents(); updateModeBadge(); setDimension(state.active); renderTrainingProgress(100);
+  initDimensions(); initVector(); initDollLayers(); initNavigation(); initEvents(); updateModeBadge(); setDimension(state.active); renderTrainingProgress(100);
 })();

@@ -14,6 +14,20 @@
 </head>
 <body>
   <div class="noise" aria-hidden="true"></div>
+  <svg class="svg-definitions" aria-hidden="true" width="0" height="0">
+    <defs>
+      <symbol id="matryoshka-shape" viewBox="0 0 100 140">
+        <path class="doll-shell" fill="currentColor" stroke="#e3ddff" stroke-opacity=".38" d="M50 3C36.8 3 27.5 14.2 27.5 28.2c0 8.2 3.3 15.1 8.8 20.3C19.1 58.9 8.5 78.2 8.5 103.1 8.5 126 23.5 137 50 137s41.5-11 41.5-33.9c0-24.9-10.6-44.2-27.8-54.6 5.5-5.2 8.8-12.1 8.8-20.3C72.5 14.2 63.2 3 50 3Z"/>
+        <path class="doll-shawl" fill="#fff" fill-opacity=".11" d="M23.8 68.5c7.3-8.4 16-12.6 26.2-12.6s18.9 4.2 26.2 12.6c-6.5 5.8-15.2 9.2-26.2 9.2s-19.7-3.4-26.2-9.2Z"/>
+        <circle class="doll-face" cx="50" cy="32.8" r="13.7" fill="#171321" stroke="#f0ebff" stroke-opacity=".5"/>
+        <path class="doll-hair" fill="currentColor" d="M37.7 31.8c1.6-8.2 6.2-12.3 12.3-12.3s10.7 4.1 12.3 12.3c-3.9-3-8-4.5-12.3-4.5s-8.4 1.5-12.3 4.5Z"/>
+        <circle class="doll-eye" cx="45.2" cy="34" r="1.25" fill="#fff"/><circle class="doll-eye" cx="54.8" cy="34" r="1.25" fill="#fff"/>
+        <path class="doll-smile" d="M46.2 40.2c2.5 2 5.1 2 7.6 0" fill="none" stroke="#fff" stroke-width="1.2" stroke-linecap="round"/>
+        <path class="doll-seam" d="M13.3 96.4c11.8 5.2 24 7.8 36.7 7.8s24.9-2.6 36.7-7.8" fill="none" stroke="#fff" stroke-opacity=".42" stroke-width="1.2"/>
+        <path class="doll-flower" d="M50 82c2.2-5.3 7.7-5.3 8.2-1.1.4 3.1-2.8 5.7-8.2 9.4-5.4-3.7-8.6-6.3-8.2-9.4.5-4.2 6-4.2 8.2 1.1Z" fill="none" stroke="#fff" stroke-opacity=".68" stroke-width="1.5"/>
+      </symbol>
+    </defs>
+  </svg>
   <header class="topbar">
     <a class="brand" href="./" aria-label="MCNE 七维套娃实验室首页">
       <span class="brand-mark">M</span>
@@ -40,11 +54,19 @@
           <p>同一个图编码器生成一条完整向量；七个嵌套前缀分别适配从端侧设备到云端服务器的不同资源预算。</p>
         </div>
         <div id="hero-art-frame" class="hero-art-frame" aria-live="polite">
-          <div class="nested-doll-view" role="img" aria-label="同一只七层俄罗斯套娃；高亮区域随向量前缀维度逐层扩大">
-            <img src="assets/seven-layer-matryoshka.png" alt="" aria-hidden="true" class="nested-doll-image nested-doll-base">
-            <img id="nested-doll-highlight" src="assets/seven-layer-matryoshka.png" alt="" aria-hidden="true" class="nested-doll-image nested-doll-highlight">
-          </div>
-          <div class="active-layer-badge"><span>同一模型 · 高亮区域随前缀扩展</span><strong id="hero-layer-dim">128D</strong><em id="hero-layer-name">轻量·边缘推理</em></div>
+          <svg class="nested-doll-svg" viewBox="0 0 420 480" role="img" aria-labelledby="nested-doll-title nested-doll-desc">
+            <title id="nested-doll-title">MCNE 七层嵌套向量套娃</title>
+            <desc id="nested-doll-desc">每次选择更大的向量维度，都会从中心向外精确点亮一层套娃。</desc>
+            <g class="matryoshka-layer" data-layer="6" data-dim="768"><use href="#matryoshka-shape" x="55" y="10" width="310" height="434"/></g>
+            <g class="matryoshka-layer" data-layer="5" data-dim="512"><use href="#matryoshka-shape" x="85" y="94" width="250" height="350"/></g>
+            <g class="matryoshka-layer" data-layer="4" data-dim="384"><use href="#matryoshka-shape" x="113" y="164" width="194" height="280"/></g>
+            <g class="matryoshka-layer" data-layer="3" data-dim="256"><use href="#matryoshka-shape" x="137" y="234" width="146" height="210"/></g>
+            <g class="matryoshka-layer" data-layer="2" data-dim="128"><use href="#matryoshka-shape" x="157" y="290" width="106" height="154"/></g>
+            <g class="matryoshka-layer" data-layer="1" data-dim="64"><use href="#matryoshka-shape" x="172" y="332" width="76" height="112"/></g>
+            <g class="matryoshka-layer" data-layer="0" data-dim="32"><use href="#matryoshka-shape" x="182" y="360" width="56" height="84"/></g>
+            <path class="doll-ground" d="M43 445h334"/>
+          </svg>
+          <div class="active-layer-badge"><span>精确分层 · 由内向外逐层扩展</span><strong id="hero-layer-dim">128D</strong><em id="hero-layer-name">轻量·边缘推理</em></div>
         </div>
         <div class="dimension-orbit" id="dimension-orbit" aria-label="选择向量维度"></div>
         <div class="stage-foot">
@@ -139,7 +161,7 @@
         <div class="model-cabinet">
           <div class="cabinet-side"><span>传统方案</span><div class="model-boxes" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><strong>7 个独立套娃模型</strong></div>
           <div class="cabinet-divider"></div>
-          <div class="cabinet-side mcne-side"><span>MCNE</span><img src="assets/seven-layer-matryoshka.png" alt="七层套娃"><strong>1 个模型 · 7 种维度</strong></div>
+          <div class="cabinet-side mcne-side"><span>MCNE</span><svg class="cabinet-nested-svg" viewBox="0 0 420 480" role="img" aria-label="一个模型中的七层嵌套套娃"><g class="cabinet-layer"><use href="#matryoshka-shape" x="55" y="10" width="310" height="434"/></g><g class="cabinet-layer"><use href="#matryoshka-shape" x="85" y="94" width="250" height="350"/></g><g class="cabinet-layer"><use href="#matryoshka-shape" x="113" y="164" width="194" height="280"/></g><g class="cabinet-layer"><use href="#matryoshka-shape" x="137" y="234" width="146" height="210"/></g><g class="cabinet-layer"><use href="#matryoshka-shape" x="157" y="290" width="106" height="154"/></g><g class="cabinet-layer"><use href="#matryoshka-shape" x="172" y="332" width="76" height="112"/></g><g class="cabinet-layer"><use href="#matryoshka-shape" x="182" y="360" width="56" height="84"/></g></svg><strong>1 个模型 · 7 种维度</strong></div>
         </div>
       </div>
     </section>

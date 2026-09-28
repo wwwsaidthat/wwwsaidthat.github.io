@@ -5,8 +5,6 @@
   const COLORS = ["#7166aa", "#786db5", "#8075c0", "#887dcb", "#9085d6", "#988de1", "#a095ec"];
   const NAMES = ["核心·极速部署", "紧凑·移动推理", "轻量·边缘推理", "均衡·实时服务", "增强·复杂关系", "精细·高精分类", "完整·全量语义"];
   const DEVICES = ["IoT", "移动端", "边缘设备", "实时服务", "边缘服务器", "工作站", "云端"];
-  const HIGHLIGHT_WIDTHS = [18, 25, 33, 44, 56, 70, 88];
-  const HIGHLIGHT_TOPS = [66, 58, 49, 39, 28, 16, 2];
   const MOCK = {
     baseline: [63.8, 68.7, 72.4, 77.1, 79.2, 80.3, 81.1],
     mcne: [73.5, 78.8, 81.6, 83.4, 84.1, 84.5, 84.7],
@@ -107,14 +105,6 @@
     }
   }
 
-  function highlightClip(index) {
-    const width = HIGHLIGHT_WIDTHS[index];
-    const top = HIGHLIGHT_TOPS[index];
-    const half = width / 2;
-    const left = 50 - half, right = 50 + half;
-    return `polygon(50% ${top}%, ${50 - half * .42}% ${top + 4}%, ${left}% ${Math.min(84, top + 20)}%, ${left + half * .08}% 84%, ${50 - half * .55}% 94%, 50% 98%, ${50 + half * .55}% 94%, ${right - half * .08}% 84%, ${right}% ${Math.min(84, top + 20)}%, ${50 + half * .42}% ${top + 4}%)`;
-  }
-
   function setDimension(index) {
     state.active = Math.max(0, Math.min(DIMS.length - 1, index));
     const dim = DIMS[state.active];
@@ -131,7 +121,12 @@
     $("#vector-prefix-label").textContent = `仅截取前 ${dim} 维`;
     const artFrame = $("#hero-art-frame");
     artFrame.style.setProperty("--layer-color", COLORS[state.active]);
-    $("#nested-doll-highlight").style.clipPath = highlightClip(state.active);
+    $$(".nested-doll-svg .matryoshka-layer").forEach(layer => {
+      const layerIndex = Number(layer.dataset.layer);
+      layer.classList.toggle("included", layerIndex <= state.active);
+      layer.classList.toggle("active", layerIndex === state.active);
+    });
+    $(".nested-doll-svg").setAttribute("aria-label", `当前 ${dim} 维：已从中心向外点亮 ${state.active + 1} 层，共 7 层`);
     $("#hero-layer-dim").textContent = `${dim}D`;
     $("#hero-layer-name").textContent = NAMES[state.active];
     updateScores();

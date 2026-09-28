@@ -56,12 +56,16 @@ h1 { margin: 0; font-size: clamp(42px,5vw,78px); line-height: .98; letter-spacin
 h1 span { color: transparent; -webkit-text-stroke: 1px rgba(255,255,255,.7); }
 .stage-copy > p:last-child { max-width: 440px; color: var(--muted); font-size: 15px; line-height: 1.7; }
 .hero-art-frame { --layer-color:#f8ce46; position:absolute; right:-4%; bottom:54px; width:min(61%,620px); height:82%; overflow:hidden; }
-.doll-layer-stack { position:absolute; z-index:1; inset:0; }
-.doll-canvas { position:absolute; left:50%; top:50%; width:auto; height:100%; max-width:100%; transform:translate(-50%,-50%); mix-blend-mode:screen; }
-.doll-base { opacity:.42; filter:grayscale(.9) saturate(.22) brightness(.34) contrast(1.15); }
-.doll-layer { opacity:0; filter:saturate(.8) brightness(.7); transition:opacity .32s,filter .32s; }
-.doll-layer.active { opacity:1; filter:saturate(1.5) brightness(1.25) contrast(1.12); animation:layer-flash .52s ease-out; }
-@keyframes layer-flash { 0% { opacity:.35; } 48% { opacity:1; } 70% { opacity:.68; } 100% { opacity:1; } }
+.gourd-family { position:absolute; z-index:1; left:2%; right:2%; top:24%; bottom:18%; display:flex; align-items:flex-end; justify-content:center; gap:3px; }
+.gourd-figure { flex:0 1 calc(var(--gourd-height) * .58); width:calc(var(--gourd-height) * .58); height:var(--gourd-height); color:var(--gourd-color); opacity:.13; filter:grayscale(.75) brightness(.45); transform-origin:50% 100%; transition:opacity .3s,filter .3s,transform .3s; }
+.gourd-figure svg { display:block; width:100%; height:calc(100% - 18px); overflow:visible; }
+.gourd-shell { stroke:color-mix(in srgb,var(--gourd-color) 72%,white); stroke-width:2; }
+.gourd-stem,.gourd-glint,.gourd-seam { fill:none; stroke:rgba(255,245,205,.82); stroke-width:3; stroke-linecap:round; }
+.gourd-glint { stroke-width:4; opacity:.7; }.gourd-seam { stroke-width:1.5; opacity:.5; }
+.gourd-figure small { display:block; margin-top:2px; color:var(--gourd-color); font-size:9px; font-weight:800; text-align:center; }
+.gourd-figure.included { opacity:.74; filter:saturate(.95) brightness(.9); }
+.gourd-figure.active { opacity:1; filter:saturate(1.32) brightness(1.18) drop-shadow(0 0 13px color-mix(in srgb,var(--gourd-color) 70%,transparent)); transform:translateY(-8px) scale(1.05); animation:gourd-flash .55s ease-out; }
+@keyframes gourd-flash { 0% { opacity:.4; transform:translateY(0) scale(.92); } 65% { opacity:1; transform:translateY(-11px) scale(1.09); } 100% { transform:translateY(-8px) scale(1.05); } }
 .active-layer-badge { position:absolute; z-index:3; right:13%; bottom:5%; min-width:128px; padding:10px 12px; border:1px solid color-mix(in srgb,var(--layer-color) 48%,transparent); border-radius:12px; background:rgba(8,7,15,.78); backdrop-filter:blur(12px); box-shadow:0 12px 32px rgba(0,0,0,.25); }
 .active-layer-badge span,.active-layer-badge strong,.active-layer-badge em { display:block; }.active-layer-badge span { color:var(--muted); font-size:9px; letter-spacing:.12em; }.active-layer-badge strong { margin-top:3px; color:var(--layer-color); font-size:22px; }.active-layer-badge em { margin-top:2px; color:var(--text); font-size:10px; font-style:normal; }
 .dimension-orbit { position: absolute; z-index: 4; right: 20px; top: 24px; display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; max-width: 330px; }

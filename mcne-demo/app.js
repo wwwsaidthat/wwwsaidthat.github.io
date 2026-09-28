@@ -5,7 +5,7 @@
   const COLORS = ["#ff5d70", "#ff934b", "#f8ce46", "#33d17a", "#2bd2ca", "#448cff", "#9a6dff"];
   const NAMES = ["红维·轻量核心", "橙维·快速感知", "黄维·稳健表达", "绿维·平衡部署", "青维·关系增强", "蓝维·精细区分", "紫维·完整语义"];
   const DEVICES = ["IoT", "移动端", "边缘设备", "实时服务", "边缘服务器", "工作站", "云端"];
-  const LAYER_BOUNDS = [[.46, .54, .67, .84], [.41, .59, .61, .83], [.37, .63, .52, .84], [.32, .68, .42, .86], [.26, .74, .30, .9], [.2, .8, .16, .94], [.08, .92, 0, 1]];
+  const GOURD_HEIGHTS = [72, 84, 98, 114, 132, 152, 176];
   const MOCK = {
     baseline: [63.8, 68.7, 72.4, 77.1, 79.2, 80.3, 81.1],
     mcne: [73.5, 78.8, 81.6, 83.4, 84.1, 84.5, 84.7],
@@ -106,63 +106,23 @@
     }
   }
 
-  function colorLayer(r, g, b) {
-    const rn = r / 255, gn = g / 255, bn = b / 255;
-    const max = Math.max(rn, gn, bn), min = Math.min(rn, gn, bn), delta = max - min;
-    const saturation = max === 0 ? 0 : delta / max;
-    if (saturation < .2 || max < .18 || delta === 0) return -1;
-    let hue;
-    if (max === rn) hue = 60 * (((gn - bn) / delta) % 6);
-    else if (max === gn) hue = 60 * ((bn - rn) / delta + 2);
-    else hue = 60 * ((rn - gn) / delta + 4);
-    if (hue < 0) hue += 360;
-    if (hue < 18 || hue >= 345) return 0;
-    if (hue < 42) return 1;
-    if (hue < 68) return 2;
-    if (hue < 165) return 3;
-    if (hue < 205) return 4;
-    if (hue < 250) return 5;
-    return 6;
-  }
-
-  function initDollLayers() {
-    const stack = $("#doll-layer-stack");
-    const base = $("#doll-base");
-    const image = new Image();
-    image.addEventListener("load", () => {
-      const width = base.width, height = base.height;
-      const baseContext = base.getContext("2d", {willReadFrequently: true});
-      baseContext.drawImage(image, 390, 0, 780, 1024, 0, 0, width, height);
-      const source = baseContext.getImageData(0, 0, width, height);
-      const dimmedBase = new ImageData(new Uint8ClampedArray(source.data), width, height);
-      const layerData = DIMS.map(() => new ImageData(width, height));
-      for (let offset = 0; offset < source.data.length; offset += 4) {
-        const value = Math.max(source.data[offset], source.data[offset + 1], source.data[offset + 2]);
-        dimmedBase.data[offset + 3] = Math.round(dimmedBase.data[offset + 3] * Math.max(0, Math.min(1, (value - 24) / 72)));
-        const layer = colorLayer(source.data[offset], source.data[offset + 1], source.data[offset + 2]);
-        if (layer < 0) continue;
-        const pixel = offset / 4;
-        const x = (pixel % width) / width, y = Math.floor(pixel / width) / height;
-        const [left, right, top, bottom] = LAYER_BOUNDS[layer];
-        if (x < left || x > right || y < top || y > bottom) continue;
-        layerData[layer].data[offset] = source.data[offset];
-        layerData[layer].data[offset + 1] = source.data[offset + 1];
-        layerData[layer].data[offset + 2] = source.data[offset + 2];
-        layerData[layer].data[offset + 3] = source.data[offset + 3];
-      }
-      baseContext.clearRect(0, 0, width, height);
-      baseContext.putImageData(dimmedBase, 0, 0);
-      layerData.forEach((pixels, index) => {
-        const canvas = document.createElement("canvas");
-        canvas.width = width; canvas.height = height;
-        canvas.className = "doll-canvas doll-layer";
-        canvas.dataset.layer = String(index);
-        canvas.getContext("2d").putImageData(pixels, 0, 0);
-        canvas.classList.toggle("active", index === state.active);
-        stack.appendChild(canvas);
-      });
-    }, {once: true});
-    image.src = "assets/seven-layer-matryoshka.png";
+  function initGourds() {
+    const family = $("#gourd-family");
+    DIMS.forEach((dim, index) => {
+      const gourd = document.createElement("span");
+      gourd.className = "gourd-figure";
+      gourd.dataset.layer = String(index);
+      gourd.style.setProperty("--gourd-color", COLORS[index]);
+      gourd.style.setProperty("--gourd-height", `${GOURD_HEIGHTS[index]}px`);
+      gourd.innerHTML = `<svg viewBox="0 0 100 142" aria-hidden="true">
+        <defs><linearGradient id="gourd-${dim}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".52"/><stop offset=".2" stop-color="${COLORS[index]}"/><stop offset="1" stop-color="${COLORS[index]}" stop-opacity=".66"/></linearGradient></defs>
+        <path class="gourd-stem" d="M50 5c7 10 8 19 2 28"/>
+        <path class="gourd-shell" fill="url(#gourd-${dim})" d="M49 29C35 23 23 32 25 47c1 7 5 12 10 16-16 9-23 27-19 44 5 21 17 32 34 34 17-2 29-13 34-34 4-17-3-35-19-44 5-4 9-9 10-16 2-15-10-24-24-18-1-8-1-16-1-24-1 8-1 16-1 24Z"/>
+        <path class="gourd-glint" d="M37 45c5-7 15-7 20-2M29 88c3-10 9-16 17-20"/>
+        <path class="gourd-seam" d="M26 64c14 8 34 8 48 0"/>
+      </svg><small>${dim}D</small>`;
+      family.appendChild(gourd);
+    });
   }
 
   function setDimension(index) {
@@ -181,7 +141,11 @@
     $("#vector-prefix-label").textContent = `仅截取前 ${dim} 维`;
     const artFrame = $("#hero-art-frame");
     artFrame.style.setProperty("--layer-color", COLORS[state.active]);
-    $$(".doll-layer").forEach((layer) => layer.classList.toggle("active", Number(layer.dataset.layer) === state.active));
+    $$(".gourd-figure").forEach((gourd) => {
+      const layer = Number(gourd.dataset.layer);
+      gourd.classList.toggle("included", layer <= state.active);
+      gourd.classList.toggle("active", layer === state.active);
+    });
     $("#hero-layer-dim").textContent = `${dim}D`;
     $("#hero-layer-name").textContent = NAMES[state.active];
     updateScores();
@@ -453,5 +417,5 @@
     });
   }
 
-  initDimensions(); initVector(); initDollLayers(); initNavigation(); initEvents(); updateModeBadge(); setDimension(state.active); renderTrainingProgress(100);
+  initDimensions(); initVector(); initGourds(); initNavigation(); initEvents(); updateModeBadge(); setDimension(state.active); renderTrainingProgress(100);
 })();

@@ -40,8 +40,11 @@
           <p>同一个图编码器生成一条完整向量；七个嵌套前缀分别适配从端侧设备到云端服务器的不同资源预算。</p>
         </div>
         <div id="hero-art-frame" class="hero-art-frame" aria-live="polite">
-          <div id="gourd-family" class="gourd-family" role="img" aria-label="赤橙黄绿青蓝紫七个葫芦从小到大排列；所选维度及所有更小维度保持点亮"></div>
-          <div class="active-layer-badge"><span>嵌套前缀 · 小维度同步点亮</span><strong id="hero-layer-dim">128D</strong><em id="hero-layer-name">黄维·稳健表达</em></div>
+          <div class="nested-doll-view" role="img" aria-label="同一只七层俄罗斯套娃；高亮区域随向量前缀维度逐层扩大">
+            <img src="assets/seven-layer-matryoshka.png" alt="" aria-hidden="true" class="nested-doll-image nested-doll-base">
+            <img id="nested-doll-highlight" src="assets/seven-layer-matryoshka.png" alt="" aria-hidden="true" class="nested-doll-image nested-doll-highlight">
+          </div>
+          <div class="active-layer-badge"><span>同一模型 · 高亮区域随前缀扩展</span><strong id="hero-layer-dim">128D</strong><em id="hero-layer-name">轻量·边缘推理</em></div>
         </div>
         <div class="dimension-orbit" id="dimension-orbit" aria-label="选择向量维度"></div>
         <div class="stage-foot">
@@ -51,7 +54,7 @@
 
       <aside class="control-panel" aria-label="训练与向量状态">
         <div class="panel-title-row">
-          <div><p class="panel-kicker">CURRENT DOLL</p><h2 id="current-doll-title">128D · 黄维守护者</h2></div>
+          <div><p class="panel-kicker">CURRENT DOLL</p><h2 id="current-doll-title">128D · 轻量·边缘推理</h2></div>
           <span id="device-chip" class="device-chip">边缘设备</span>
         </div>
 
@@ -134,7 +137,7 @@
           <div id="mission-result" class="mission-result"><span>选择一个维度出征</span><strong>等待选择</strong></div>
         </div>
         <div class="model-cabinet">
-          <div class="cabinet-side"><span>传统方案</span><div class="model-boxes" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><strong>7 个模型</strong></div>
+          <div class="cabinet-side"><span>传统方案</span><div class="model-boxes" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><strong>7 个独立套娃模型</strong></div>
           <div class="cabinet-divider"></div>
           <div class="cabinet-side mcne-side"><span>MCNE</span><img src="assets/seven-layer-matryoshka.png" alt="七层套娃"><strong>1 个模型 · 7 种维度</strong></div>
         </div>

@@ -2,10 +2,11 @@
   "use strict";
 
   const DIMS = [32, 64, 128, 256, 384, 512, 768];
-  const COLORS = ["#ff5d70", "#ff934b", "#f8ce46", "#33d17a", "#2bd2ca", "#448cff", "#9a6dff"];
-  const NAMES = ["红维·轻量核心", "橙维·快速感知", "黄维·稳健表达", "绿维·平衡部署", "青维·关系增强", "蓝维·精细区分", "紫维·完整语义"];
+  const COLORS = ["#7166aa", "#786db5", "#8075c0", "#887dcb", "#9085d6", "#988de1", "#a095ec"];
+  const NAMES = ["核心·极速部署", "紧凑·移动推理", "轻量·边缘推理", "均衡·实时服务", "增强·复杂关系", "精细·高精分类", "完整·全量语义"];
   const DEVICES = ["IoT", "移动端", "边缘设备", "实时服务", "边缘服务器", "工作站", "云端"];
-  const GOURD_HEIGHTS = [72, 84, 98, 114, 132, 152, 176];
+  const HIGHLIGHT_WIDTHS = [18, 25, 33, 44, 56, 70, 88];
+  const HIGHLIGHT_TOPS = [66, 58, 49, 39, 28, 16, 2];
   const MOCK = {
     baseline: [63.8, 68.7, 72.4, 77.1, 79.2, 80.3, 81.1],
     mcne: [73.5, 78.8, 81.6, 83.4, 84.1, 84.5, 84.7],
@@ -106,23 +107,12 @@
     }
   }
 
-  function initGourds() {
-    const family = $("#gourd-family");
-    DIMS.forEach((dim, index) => {
-      const gourd = document.createElement("span");
-      gourd.className = "gourd-figure";
-      gourd.dataset.layer = String(index);
-      gourd.style.setProperty("--gourd-color", COLORS[index]);
-      gourd.style.setProperty("--gourd-height", `${GOURD_HEIGHTS[index]}px`);
-      gourd.innerHTML = `<svg viewBox="0 0 100 142" aria-hidden="true">
-        <defs><linearGradient id="gourd-${dim}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".52"/><stop offset=".2" stop-color="${COLORS[index]}"/><stop offset="1" stop-color="${COLORS[index]}" stop-opacity=".66"/></linearGradient></defs>
-        <path class="gourd-stem" d="M50 5c7 10 8 19 2 28"/>
-        <path class="gourd-shell" fill="url(#gourd-${dim})" d="M49 29C35 23 23 32 25 47c1 7 5 12 10 16-16 9-23 27-19 44 5 21 17 32 34 34 17-2 29-13 34-34 4-17-3-35-19-44 5-4 9-9 10-16 2-15-10-24-24-18-1-8-1-16-1-24-1 8-1 16-1 24Z"/>
-        <path class="gourd-glint" d="M37 45c5-7 15-7 20-2M29 88c3-10 9-16 17-20"/>
-        <path class="gourd-seam" d="M26 64c14 8 34 8 48 0"/>
-      </svg><small>${dim}D</small>`;
-      family.appendChild(gourd);
-    });
+  function highlightClip(index) {
+    const width = HIGHLIGHT_WIDTHS[index];
+    const top = HIGHLIGHT_TOPS[index];
+    const half = width / 2;
+    const left = 50 - half, right = 50 + half;
+    return `polygon(50% ${top}%, ${50 - half * .42}% ${top + 4}%, ${left}% ${Math.min(84, top + 20)}%, ${left + half * .08}% 84%, ${50 - half * .55}% 94%, 50% 98%, ${50 + half * .55}% 94%, ${right - half * .08}% 84%, ${right}% ${Math.min(84, top + 20)}%, ${50 + half * .42}% ${top + 4}%)`;
   }
 
   function setDimension(index) {
@@ -141,11 +131,7 @@
     $("#vector-prefix-label").textContent = `仅截取前 ${dim} 维`;
     const artFrame = $("#hero-art-frame");
     artFrame.style.setProperty("--layer-color", COLORS[state.active]);
-    $$(".gourd-figure").forEach((gourd) => {
-      const layer = Number(gourd.dataset.layer);
-      gourd.classList.toggle("included", layer <= state.active);
-      gourd.classList.toggle("active", layer === state.active);
-    });
+    $("#nested-doll-highlight").style.clipPath = highlightClip(state.active);
     $("#hero-layer-dim").textContent = `${dim}D`;
     $("#hero-layer-name").textContent = NAMES[state.active];
     updateScores();
@@ -417,5 +403,5 @@
     });
   }
 
-  initDimensions(); initVector(); initGourds(); initNavigation(); initEvents(); updateModeBadge(); setDimension(state.active); renderTrainingProgress(100);
+  initDimensions(); initVector(); initNavigation(); initEvents(); updateModeBadge(); setDimension(state.active); renderTrainingProgress(100);
 })();
